@@ -7,7 +7,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -28,7 +30,13 @@ public class HelloController {
     private Button loginButton;
 
     @FXML
+    private Button registerButton;
+
+    @FXML
     private Button cancelButton;
+
+    private final String directoryPath = "C:/example/directory/";
+    private final File credentialsFile = new File(directoryPath + "credentials.txt");
 
     @FXML
     void loginButtonOnAction() {
@@ -38,8 +46,33 @@ public class HelloController {
         if (!username.isEmpty() && !password.isEmpty()) {
             try {
                 String hashedPassword = hashPassword(password);
-                saveCredentials(username, hashedPassword);
-                loginMessageLabel.setText("Login successful!");
+                if (validateCredentials(username, hashedPassword)) {
+                    loginMessageLabel.setText("Login successful!");
+                } else {
+                    loginMessageLabel.setText("Invalid username or password");
+                }
+            } catch (NoSuchAlgorithmException | IOException e) {
+                loginMessageLabel.setText("Error: " + e.getMessage());
+            }
+        } else {
+            loginMessageLabel.setText("Please enter username and password");
+        }
+    }
+
+    @FXML
+    void registerButtonOnAction() {
+        String username = usernameTextField.getText();
+        String password = passwordTextField.getText();
+
+        if (!username.isEmpty() && !password.isEmpty()) {
+            try {
+                String hashedPassword = hashPassword(password);
+                if (!isUsernameTaken(username)) {
+                    saveCredentials(username, hashedPassword);
+                    loginMessageLabel.setText("Registration successful! You can now login.");
+                } else {
+                    loginMessageLabel.setText("Username already taken.");
+                }
             } catch (NoSuchAlgorithmException | IOException e) {
                 loginMessageLabel.setText("Error: " + e.getMessage());
             }
@@ -67,20 +100,48 @@ public class HelloController {
     }
 
     private void saveCredentials(String username, String hashedPassword) throws IOException {
-        // Specify the directory where the file should be saved
-        String directoryPath = "C:/example/directory/";
         File directory = new File(directoryPath);
 
-        // Create the directory if it doesn't exist
         if (!directory.exists()) {
             directory.mkdirs();
         }
 
-        // Create the file in the specified directory
-        File file = new File(directoryPath + "credentials.txt");
-
-        try (FileWriter writer = new FileWriter(file, true)) {
-            writer.write("Username: " + username + ", Password: " + hashedPassword + "\n");
+        try (FileWriter writer = new FileWriter(credentialsFile, true)) {
+            writer.write(username + ":" + hashedPassword + "\n");
         }
+    }
+
+    private boolean isUsernameTaken(String username) throws IOException {
+        if (!credentialsFile.exists()) {
+            return false;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(credentialsFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(":");
+                if (parts[0].equals(username)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean validateCredentials(String username, String hashedPassword) throws IOException {
+        if (!credentialsFile.exists()) {
+            return false;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(credentialsFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(":");
+                if (parts[0].equals(username) && parts[1].equals(hashedPassword)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.effect.DropShadow?>
@@ -10,7 +11,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
-
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.stafflogin.HelloController">
    <left>
@@ -61,13 +61,13 @@
                </effect>
             </Label>
             <TextField fx:id="usernameTextField" layoutX="99.0" layoutY="116.0" promptText="Username" />
-            <TextField fx:id="passwordTextField" layoutX="99.0" layoutY="164.0" promptText="Password" />
+            <PasswordField fx:id="passwordTextField" layoutX="99.0" layoutY="164.0" promptText="Password" />
             <Button fx:id="loginButton" layoutX="35.0" layoutY="256.0" mnemonicParsing="false" onAction="#loginButtonOnAction" prefHeight="26.0" prefWidth="214.0" style="-fx-background-color: #263F73;" text="Login" textFill="WHITE">
                <effect>
                   <Blend />
                </effect>
             </Button>
-            <Button fx:id="cancelButton" layoutX="35.0" layoutY="306.0" mnemonicParsing="false" onAction="#cancelButtonOnAction" prefHeight="26.0" prefWidth="214.0" style="-fx-background-color: #263F73;" text="Cancel" textFill="WHITE">
+            <Button fx:id="registerButton" layoutX="35.0" layoutY="306.0" mnemonicParsing="false" onAction="#registerButtonOnAction" prefHeight="26.0" prefWidth="214.0" style="-fx-background-color: #263F73;" text="Register" textFill="WHITE">
                <effect>
                   <Blend />
                </effect>
